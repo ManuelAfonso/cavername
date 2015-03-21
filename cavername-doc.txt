@@ -1,0 +1,141 @@
+﻿===== Cavername ======
+Cavername é um script PHP que facilita a criação de páginas Web. Normalmente, as páginas de um site 
+têm vários elementos comuns e torna-se pouco prático fazer a manutenção se for preciso repetir muitas
+vezes o mesmo elemento, como é o caso do menu principal, cabeçalho ou rodapé.
+
+O script cria cada página a partir de um ponto de entrada (index.php) com base nos parâmetros passados no url. 
+Esses parâmetros determinam a estrutura de cada página e permitem localizar o conteúdo a colocar em cada zona.
+
+O parâmetro principal tem apenas uma letra (a) e identifica o conteúdo que vai ser escrito na zona principal,
+os conteúdos a colocar noutras zonas e o esquema da página. 
+Tudo isto é definido no ficheiro cavername.db (ver comentários no próprio ficheiro).
+
+Normalmente os conteúdos encontram-se definidos em ficheiros contido na sub-pasta CONTEUDO. Para estes casos,
+a identificação do conteúdo é o próprio caminho do ficheiro, sem extensão, por exemplo:
+ * O id do ficheiro conteudo/materiais/pv1999.htm é materiais/pv1999.
+ 
+Os conteúdos podem ser definidos em vários idiomas. No exemplo anterior, o ficheiro pv1999.pt.htm terá precedência
+sobre pv1999.htm se o idioma atual for PT. O idioma é obtido da informação passada pelo browser.
+
+Outros conteúdos podem resultar da execução de funções, por exemplo @CavernameUser:Login indica ao sistema para
+executar o método static Login da classe CavernameUser. 
+
+Uma vez obtidos todos os conteúdos colocam-se duas possibilidades, definidas no index.php:
+ * Executa-se o método Cavername::One()->Serve(); que passará o controlo para um dos ficheiros do tema
+ * Escreve-se diretamente o HTML no próprio index.php, invocando o método Cavername::Out('zona') nos lugares apropriados.
+
+===== Estrutura das páginas: zonas =====
+Os conteúdos são organizados na "base de dados" por zonas. Existem algumas zonas especiais:
+ * CAVERNAME_HEAD_ZONE - zona onde se deve acrescentar informação a colocar entre <head></head>. Esta zona é especial
+                         porque é manipulada pelo sistema de modo a inserir o título do site e do artigo principal.
+ * CAVERNAME_DEBUG_ZONE e CAVERNAME_ERROR_ZONE - zonas preenchidas com mensagens. São especiais porque são geradas no
+                                                 fim do processamento para que possam receber o máximo de mensagens possível.
+
+===== Fluxo geral do sctipt =====
+ * Carrega a "base de dados": estrutura das páginas e valores predefinidos para o tema, idioma.
+ * Obtém dados do browser (idioma) e site (caminhos).
+ * Carrega os valores da sessão: tema, utilizador e idioma.
+ * Faz o parse do pedido (query) - tenta dar alguma segurança para evitar injeção.
+ * Se estiver definido um tema verifica a sua localização e existência do layout para a página atual.
+ * Regista a existência de funcionalidades extendidas (cavername-extend.php).
+ * Obtém a lista de zonas a considerar para o pedido atual e respetivos conteúdos (apenas a identificação).
+ * Percorre a lista de zonas e "constrói" cada um dos conteúdos.
+ 
+===== Regras de construção dos conteúdos =====
+Um conteúdo tem as seguintes características:
+ * É um objeto da classe CavernameConteudo.
+ * Um ID que pode corresponder à localização de um ficheiro ou ao nome de uma função (se começar por @).
+    * Existe uma lista de redirecionamentos na BD (Alias) que deve ser usada obrigatoriamente nas funções.
+	* Serve também para alterar nomes e conteúdos sem ter que ir atrás de todos os links.
+ * Um Id para uma DIV composto por <zona>--<id_sem_barras> - é usada para criar uma DIV à volta do conteúdo.
+ * Um template (objeto de uma classe que implementa o interface ICavernameConteudoTemplate) que permite definir um tratamento 
+    específico para o conteúdo em causa. Existem as seguintes formas de atribuir um novo template:
+	* Dentro do método CavernameExtend::ExtendConteudo em função dos dados disponíveis.
+	* Dentro da execução da função quando for o caso.
+	* No próprio ficheiro se for do tipo PHP e se for de confiança (lista Trusted na BD).
+
+No caso de ser uma função, esta será chamada com o próprio objeto como parâmetro e preencherá as propriedades HTML ou DATA. 
+  Por exemplo: public static function MensagensDebug(CavernameConteudo $obj)
+ 
+No caso de ser um ficheiro, o seu conteúdo é lido do disco ou é executado se for de confiança. Em qualquer dos casos preenche sempre 
+  a propriedade HTML, ou com o conteúdo do ficheiro ou com o resultado da execução. A execução dos scripts PHP de confiança é feita
+  no contexto de uma método do objeto. Por isso, esses scripts poderão preencher a propriedade DATA e/ou alterar o TEMPLATE.
+  Os ficheiros são pesquisados seguindo uma certa ordem de extensões possíveis (ver CAVERNAME_EXTENSOES), prevalecendo os ficheiros
+  relativos ao idioma ativo conforme descrito acima.
+  Depois de lido/executado um ficheiro são realizadas as seguintes operações: 
+   * É removido o conteúdo que esteja fora da tag BODY, se existir, incluíndo a própria TAG.
+   * As expressões [!qualquer coisa] são substituídas por comentários HTML: <!--qualquer coisa-->
+   * É chamado o método CavernameExtend::ExtendConteudo para identificar o template. 
+
+Depois de executar a função ou ler/executar um ficheiro:
+ * Aplica os filtros gerais
+   * Procura as tags IMG e extrai o atributo SRC. Se for um url relativo acrescenta o url do ficheiro que foi lido.
+   * Faz a substituição de macros, executando uma função correspondente (ver Convenções e macros). Para além das macros
+     definidas na classe CavernameFuncoes, é possível acrescentar outras (ver CavernameExtend:Registar).
+ * Executa o código previsto no template (método Build).
+					
+Como funcionam os templates?
+ * Uma vez carregado o conteúdo e preenchidas as propriedades HTML e/ou DATA, o método Build do template faz a transformação 
+   pretendida. Por exemplo: a macro <!--excerpt ID--> deve ser substituída pelo excerto de um documento. O sistema começa por 
+   chamar uma função static CavernameConteudoTemplateExcerpt:Callback que devolve para PREG_FunctionsCallback o texto do excerto.
+ * Essa função static, para obter o excerto, carrega o conteúdo em memória, aplica os filtros gerais, atribui-lhe e aplica-lhe 
+   o template CavernameConteudoTemplateExcerpt. No método Build() é feita a pesquisa por <!--more--> e atribuído o texto precedente
+   à propriedade HTML. A função static devolve o valor dessa propriedade.
+   
+
+===== Convenções e macros - cavername.php =====						 
+<TITLE>Texto</TITLE> : Título geral do site (apenas em conteúdos CAVERNAME_HEAD_ZONE)
+<H1>Texto</H1>       : Título do conteúdo
+<!--nofilters-->     : Indica que não devem ser aplicados filtros (apenas em conteúdos do tipo ficheiro)
+<!--docurl-->        : Substituído pelo pasta do URL do ficheiro, permitindo a linkagem de recursos com caminhos relativos 
+<!--SiteTitle-->     : Substituído pelo título do site (se já for conhecido)
+<!--IdConteudo-->    : Substituído pelo ID do conteúdo atual
+<!--Link ID-->	     : Substituído pelo link para o conteúdo com o ID indicado
+<!--TitleFrom ID-->	 : Substituído pelo título do conteúdo com o ID indicado
+
+===== Convenções e macros - cavername-extended.php =====
+<H2>Texto</H2> : Título de um capítulo num texto que se pretende dividir por capítulos
+<!--include ID--> 	   : Substituído pelo conteúdo completo do documento com o ID indicado
+<!--excerpt ID-->	   : Substituído pelo excerto de um documento, desde o início até à macro <!--more-->
+<!--more-->            : Ver linha anterior
+<!--chapterindex ID--> : Substituído pelo índice de capítulos de um documento, definidos com a tag H2
+<!--chapters-->        : Indica que este documento deve ser paginado por capítulos (CavernameConteudoTemplateChapters)
+<!--pagebreak-->       : Indica os locais onde muda a página deste documento para fazer paginação (CavernameConteudoTemplatePages)
+
+===== Lista de funções =====
+@CavernameMensagens:MensagensDebug - constrói lista com as mensagens de debug
+@CavernameMensagens:MensagensErro - constrói lista com as mensagens de erro não fatais
+
+===== Templates em cavername.php =====
+CavernameConteudoTemplateNone        : Não faz nenhuma transformação
+CavernameConteudoTemplateMessageList : constrói lista com mensagens (usado por @CavernameMensagens:MensagensDebug e 
+                                       @CavernameMensagens:MensagensErro)
+
+===== Templates em cavername-extended.php =====
+CavernameConteudoTemplateInclude      : implementa construção de include
+CavernameConteudoTemplateExcerpt      : implementa construção de excerto
+CavernameConteudoTemplateChapterIndex : implementa construção de índice de capítulos
+CavernameConteudoTemplatePages        : implementa construção de docs paginados
+CavernameConteudoTemplateChapters     : implementa construção de docs paginados por capítulo
+
+===== Ficheiros necessários para o tema =====
+Tem que existir pelo menos um ficheiro que construa todo o HTML de uma página e que utilize o método Cavername::Out('zona') para
+  obter o conteúdo a apresentar. O nome desse ficheiro (com extensão) deve ser registado em cavername.db, secção [layOut].
+  
+Outros ficheiros são opcionais e servem para construir o HTML específico de cada template. Por exemplo, os conteúdos paginados
+  precisam de controlos de paginação. Por omissão, o sistema constrói controlos muito básicos, sendo aconselhável a criação destes
+  ficheiros se os templates correspondentes forem usados:
+ * Tchapters.php
+ * Tpages.php
+ * Tinclude.php
+ * Texcerpt.php
+ * Tchapter-index.php
+ * Tmessage-list.php
+  
+===== Parâmetros por zona =====
+Os parâmetros são automaticamente compostos com o nome da zona, por exemplo: **mainzone-p=2** indica que o 
+conteúdo da zona //mainzone// vai receber o parâmetro //p// com o valor //2//. Se existirem dois conteúdos 
+paginados na mesma zona, o parâmetro é o mesmo para ambos. 
+
+A classe que se encarrega do tratamento de pedido (query) tem um método que permite a criação de um url para 
+estes casos. Exemplo de invocação: CavernamePedido::NewWith($obj->Zona, 'p', 1);
