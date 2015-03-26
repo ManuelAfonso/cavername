@@ -1,9 +1,10 @@
+<?php require('common.php'); ?>
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
   <?php Cavername::Out(CAVERNAME_HEAD_ZONE);?>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="<?php echo $bootstrapCss;?>">
   <link href="<?php CavernameTema::Url();?>/style.css" rel="stylesheet" type="text/css" media="screen" />
   <link href="<?php CavernameTema::Url();?>/print.css" rel="stylesheet" type="text/css" media="print" />
 </head>
@@ -26,7 +27,7 @@
   <div id="debug">
     <?php Cavername::Out(CAVERNAME_DEBUG_ZONE);?>
   </div>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <script src="<?php echo $jqueryJs;?>"></script>
+  <script src="<?php echo $bootstrapJs;?>"></script>
 </body>
 </html>
