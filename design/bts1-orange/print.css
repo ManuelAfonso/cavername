@@ -1,0 +1,7 @@
+@media print
+{
+	nav, footer, header, .sidebar, #erros, #debug
+	{
+		display:none;
+	}
+}  
