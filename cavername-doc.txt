@@ -1,4 +1,4 @@
-﻿===== Cavername ======
+===== Cavername ======
 Cavername é um script PHP que facilita a criação de páginas Web. Normalmente, as páginas de um site 
 têm vários elementos comuns e torna-se pouco prático fazer a manutenção se for preciso repetir muitas
 vezes o mesmo elemento, como é o caso do menu principal, cabeçalho ou rodapé.
@@ -101,6 +101,7 @@ Como funcionam os templates?
 <!--chapterindex ID--> : Substituído pelo índice de capítulos de um documento, definidos com a tag H2
 <!--chapters-->        : Indica que este documento deve ser paginado por capítulos (CavernameConteudoTemplateChapters)
 <!--pagebreak-->       : Indica os locais onde muda a página deste documento para fazer paginação (CavernameConteudoTemplatePages)
+<navigation>           : Indica que se trata de um ficheiro com um menu de navegação (só ficheiros XML)
 
 ===== Lista de funções =====
 @CavernameMensagens:MensagensDebug - constrói lista com as mensagens de debug
@@ -112,6 +113,7 @@ CavernameConteudoTemplateMessageList : constrói lista com mensagens (usado por 
                                        @CavernameMensagens:MensagensErro)
 
 ===== Templates em cavername-extended.php =====
+CavernameConteudoTemplateNavigation   : implementa construção de menu de navegação
 CavernameConteudoTemplateInclude      : implementa construção de include
 CavernameConteudoTemplateExcerpt      : implementa construção de excerto
 CavernameConteudoTemplateChapterIndex : implementa construção de índice de capítulos
