@@ -34,12 +34,130 @@ class CavernameExtend
 		elseif(	false !== strpos($obj->Html, '<!--chapters-->'))
 		{
 			$obj->Template = new CavernameConteudoTemplateChapters();
-		}		
+		}
+		elseif(0 === strcasecmp("xml", $obj->Extensao))
+		{
+			CavernameExtend::extendXML($obj);
+		}	
 		elseif(	false !== strpos($obj->Html, '<!--csvtable-->'))
 		{
 			// TODO: $obj->Template = new CavernameConteudoTemplateCSVTable();
 			// podia ser por extensão do ficheiro mas isso não serviria para um conteudo gerado por PHp (query p.ex.)
 		}		
+	}
+	/**
+	 * Tratamento comum de ficheiros XML. 
+	 * Verifica erros e tipo pelo "nome do objeto" (1ª tag)
+	 */
+	private static function extendXML(CavernameConteudo $obj)
+	{
+		// passar de Html para objeto do tipo SimpleXMLElement 
+		$xml = simplexml_load_string($obj->Html);
+		if ($xml === false)
+		{
+			if (CAVERNAME_DEBUG)
+			{
+				foreach(libxml_get_errors() as $error) 
+				{
+					CavernameMensagens::Debug("$obj->Id: error $error->code $error->message at line $error->line column $error->column");
+				}
+			}
+			return;
+		}
+		// identificar tipo de objeto
+		if (0 === strcasecmp("navigation", $xml->getName()))
+		{
+			$obj->Template = new CavernameConteudoTemplateNavigation();
+		}		
+		// guardar objeto e limpar html
+		$obj->Html = '';
+		$obj->Data = $xml;
+	}
+}
+/** ========================================================================================================== navigation
+ * Constrói um menu de navegação a partir de um ficheiro XML
+ */ 
+class CavernameConteudoTemplateNavigation implements ICavernameConteudoTemplate
+{
+	/**
+	 * Carrega os dados para um array para que o template seja o mais simples possível.
+	 * A propridade $obj->Data contém um objeto do tipo SimpleXMLElement
+	 */
+	public function Build(CavernameConteudo $obj)
+	{
+		$this->linkHome = '?';
+		$this->siteTitle = Cavername::One()->TituloSite;
+		$obj->Data = $this->xmlToArray($obj->Data, $obj);
+		$this->Render($obj);
+	}
+	private function xmlToArray($xml, $obj) // função recursiva
+	{
+		$its = array();
+		foreach($xml->children() as $link) 
+		{ 
+			$item = new CavernameConteudoTemplateNavigationItem();
+			$item->Link = trim($link);
+			$item->Title = trim($link['title']);
+			$item->Target = trim($link['target']);
+			if (0 === strcasecmp("link", $link->getName()))
+			{
+				if ('' === $item->Title) 
+				{
+					$outro = new CavernameConteudo($item->Link, $obj->Zona, false);
+					if ('' === $outro->Titulo)
+					{
+						if (CAVERNAME_DEBUG) CavernameMensagens::Debug('<h1> not found');
+					}
+					$item->Title = $outro->Titulo;
+				}
+				$item->Link = CavernamePedido::Create($item->Link);
+			}
+			if (1 === $link->count() && 0 === strcasecmp("linklist", $link->children()[0]->getName()))
+			{
+				$item->Submenu = $this->xmlToArray($link->children()[0], $obj);
+			}
+			$item->Prepare();
+			$its[] = $item;
+		}
+		return $its;
+	}
+	private function Render(CavernameConteudo $obj)
+	{
+		$t = CavernameTema::IncludeTemplate('Tnavigation.php');
+		if ('' === $t)
+		{		
+			$obj->Html = $this->arrayToHtml($obj->Data);
+		}
+		else
+		{
+			include($t);
+		}
+	}
+	private function arrayToHtml($a) // função recursiva
+	{
+		$s = "<ul>";
+		foreach($a as $lk)
+		{
+			$s .= "<li><a href='$lk->Link' $lk->Target>$lk->Title</a>";
+			if (count($lk->Submenu) > 0) $s .= $this->arrayToHtml($lk->Submenu);
+			$s .= "</li>". PHP_EOL;
+		}
+		$s .= "</ul>". PHP_EOL;	
+		return $s;
+	}
+}
+class CavernameConteudoTemplateNavigationItem
+{
+	public $Link;
+	public $Title = '';
+	public $Target = '';
+	public $Submenu = array();
+	public function Prepare()
+	{
+		if ('' !== $this->Target) 
+		{
+			$this->Target = "target='$this->Target'";
+		}
 	}
 }
 /** ========================================================================================================== include
@@ -92,7 +210,7 @@ class CavernameConteudoTemplateExcerpt implements ICavernameConteudoTemplate
         $pos = strpos($obj->Html, '<!--more-->');
         if ($pos === false)
         {
-			if (false === CAVERNAME_DEBUG) CavernameMensagens::Debug('<!--more--> not found');
+			if (CAVERNAME_DEBUG) CavernameMensagens::Debug('<!--more--> not found');
             return;
         }
 		$this->read_more_link = CavernamePedido::Create($obj->Id);
@@ -130,7 +248,7 @@ class CavernameConteudoTemplateChapterIndex implements ICavernameConteudoTemplat
 		$obj->AplicarFiltrosGerais();
 		if (! $obj->Template instanceof CavernameConteudoTemplateChapters)
 		{
-			if (false === CAVERNAME_DEBUG) CavernameMensagens::Debug('no chapters');
+			if (CAVERNAME_DEBUG) CavernameMensagens::Debug('no chapters');
 			return $original;
 		}
 		$obj->Template = new CavernameConteudoTemplateChapterIndex();		
@@ -142,7 +260,7 @@ class CavernameConteudoTemplateChapterIndex implements ICavernameConteudoTemplat
         preg_match_all(CAVERNAME_PREG_H2, $obj->Html, $matches, PREG_PATTERN_ORDER);
         if (sizeof($matches) != 2)
         {
-			if (false === CAVERNAME_DEBUG) CavernameMensagens::Debug('<h2> not found');
+			if (CAVERNAME_DEBUG) CavernameMensagens::Debug('<h2> not found');
 			$obj->Html = '';
             return;
         }      

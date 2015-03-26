@@ -1,0 +1,77 @@
+# As linhas que começam com # são ignoradas
+# As colunas de cada linha devem ser separadas por espaços, tabulações ou sinal de igual
+
+#
+# Definições gerais e aspetos gerais do site: tema e idioma por omissão
+#
+[config]
+HomePage = home
+Idioma = pt
+Tema = bts1-orange
+
+#
+# Layout de cada página. 
+# * representa todas as páginas que não tiverem uma definição específica.
+#
+[layOut]
+*		                layout.php
+home 	                frontpage.php
+organismos/organismos	layout-sem-sidebar.php
+
+#
+# Regras para construção das páginas. 
+# Quando se acrescenta uma página só é necessário acrescentá-la nesta secção se ela
+# tiver regras especiais: layout ou conteúdos adicionais ou alternativos nas áreas comuns.
+# As definições são implementadas pela ordem com que são declaradas.
+#
+# Nas duas primeiras colunas indica-se: pagina e zona.
+# Nas restantes indica(m)-se o(s) conteudo(s).
+#
+# * representa todas as páginas que não tiverem uma definição específica.
+# organismos/* representa todas as páginas que começam por «organismos».
+#
+# Para indicar onde é colocado o conteúdo identificado no URL com o parâmetro a
+# deve usar-se uma palavra especial: CAVERNAME_SPECIAL_CONTENT_MAIN.
+#
+# Para acrescentar um conteúdo a uma zona, em vez de substituir a regra geral, 
+# usa-se o sinal + como PREFIXO ou SUFIXO, para acrescentar informação após ou antes, respetivamente.
+#
+[pages]
+*	CAVERNAME_HEAD_ZONE  			htmlhead
+*	title  							blocks/heading
+*	navigation  					blocks/navigation2
+*	mainzone  						CAVERNAME_SPECIAL_CONTENT_MAIN
+*	final  							blocks/final
+*	extra  							ligacoes	+videos/videos																					
+
+home	extra-fp  					videos/videos
+home	extra  						ligacoes
+home    title                 		+sentido
+
+videos/*	extra	videos/videos
+
+organismos/ph	extra	organismos/ph_extra
+organismos/cc	extra	organismos/cc_extra
+organismos/ac	extra	organismos/ac_extra 
+organismos/cmeh	extra	organismos/cmeh_extra
+organismos/msg	extra	organismos/msg_extra
+
+organismos/*	extra				+organismos/menu
+organismos/*	CAVERNAME_HEAD_ZONE	+organismos/menu-css
+
+# a seguinte linha remove o conteúdo da sidebar, mas ficava melhor sem sidebar
+organismos/organismos	extra	
+
+parques/parque	extra	parques/ligacoes
+
+#
+#Definir redirecionamentos. Pode ser útil para quando uma página muda de local ou de nome.
+#
+[alias]
+mainz main
+
+#
+# Definir conteúdo que pode ser executado (scripts php)
+#
+[trusted]
+testes/t2

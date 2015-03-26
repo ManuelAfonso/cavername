@@ -1,0 +1,15 @@
+<navigation>
+  <link title="Início">home</link>
+  <link title="Parques">parques/parque</link>
+  <link>organismos/organismos
+    <linklist>
+	  <link>organismos/ph</link>
+	  <link>organismos/ac</link>
+	  <link>organismos/cmeh</link>
+	  <link>organismos/cc</link>
+	  <link>organismos/msg</link>	
+    </linklist>
+  </link>
+  <link>materiais/materiais</link>
+  <!--<externallink title="Google" target="_blank">http://www.google.com</externallink>-->
+</navigation>

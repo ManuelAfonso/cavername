@@ -1,0 +1,186 @@
+section p {
+  text-align:justify;
+}
+a:hover {
+  text-decoration:none;
+}
+/* === navegação === */
+.navbar {
+  border-radius: 0px;
+  margin-bottom: 0px;
+  border:0;
+}
+.navbar-inverse .navbar-brand, .navbar-inverse .navbar-nav li a {
+  color: #aaa;
+}
+.pagination {
+  margin: 0 0 20px 0;
+}
+.pager {
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+/* === jumbotron === */
+.jumbotron {
+  background-color: #E6733A; 
+  color: #fff;
+}
+.jumbotron h1 {
+  text-transform: lowercase;
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+.jumbotron p {
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+.jumbotron a {
+  color: #fff;
+}
+.jumbotron a:hover {
+  background-color:#E6733A;
+  text-decoration:none;
+  color: #fff;
+}
+/* === page-header === */
+.page-header {
+  margin:0 0 20px 0;
+  padding:15px 0 15px 0px;
+  background-color: #E6733A;
+  color: #fff;
+}
+.page-header a {
+  color: #fff;
+}
+.page-header a:hover {
+  background-color:#E6733A;
+  text-decoration:none;
+  color: #fff;
+}
+.page-header h1 {
+  text-transform: lowercase;
+  font-size: 380%;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  margin:0;
+}
+/* === sidebar === */
+.sidebar  div {  
+  padding: 0 10px 10px 10px;
+  margin: 0px 0px 20px 20px;
+  border: thin solid #E7E2DC;  
+}
+.sidebar h3, .sidebar p {
+  text-align:center;
+}
+.sidebar h1 {
+  color: #999;
+  font-size:100%;
+  font-weight: 600;  
+  margin:0px;
+  padding: 5px 0px;
+}
+.sidebar h3 {
+  font-size: 120%;
+}
+.sidebar p img {
+  padding: 2px;
+  border: thin solid #E7E2DC;
+}
+/* === lista de organismos === */
+ul.organismos-menu 
+{
+  list-style: none;
+  -webkit-padding-start: 0px;
+}
+ul.organismos-menu li a {
+  float:left;
+  display: block;  
+  height: 70px;
+  width: 150px;
+  margin-top: 20px;
+  margin-right:20px;  
+  text-indent:-9999px;
+}
+#extra--organismos-menu {
+  border: 0;  
+  padding: 0;
+}
+/* === elementos do parque === */
+#elementos-parque p {
+  text-align: center;
+}
+
+#elementos-parque h2 {
+  font-size: 140%;
+  font-weight: 600; 
+}
+
+#elementos-parque .col-md-6 {
+  padding-right: 30px;
+  padding-left: 30px;
+  margin-bottom: 20px;
+}
+
+/* === footer === */
+#footer {
+  background: black;
+  margin: 40px auto 0 auto;
+  padding: 15px 0;
+}
+#footer p {
+  text-align: center;
+}
+#footer p, footer a {
+  color: #FFFFFF;
+}
+/* === erros e debug === */
+#erros {
+  background-color:darkred;
+  color:white;
+  font-size: 120%;
+  font-family: "Lucida Console", "Courier New", Monospace;
+  clear:both;
+}
+#debug {
+  font-size: 120%;
+  font-family: "Lucida Console", "Courier New", Monospace;
+  clear:both;
+}
+
+/* === componentes === */
+.only-for-excerpt {
+  display: none;
+}
+.cvrn-content-excerpt .only-for-excerpt {
+  display: block;
+}
+#content .cvrn-content-excerpt {
+  margin-top: 40px;
+  padding: 15px;
+  background-color: #F5F3F1;
+  border-bottom: 1px dotted #E7E2DC;
+}
+#content-fp .cvrn-content-excerpt {
+  margin-top: 20px;
+  padding: 15px;
+  }
+#content-fp .cvrn-content-excerpt p {
+  text-align: left;
+}
+.cvrn-content-excerpt-title {
+  font-size: 160%;
+  display:block;
+  margin-bottom: 15px;
+}
+.cvrn-pages-title {
+  font-style: italic;
+  margin-bottom: 10px;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  text-align:right;
+}
+.cvrn-chapters-page, .cvrn-pages-page {
+  line-height: 170%;
+  clear: both;
+}
+.cvrn-message-list
+{
+  padding: 20px;
+}
