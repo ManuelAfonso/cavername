@@ -17,6 +17,7 @@ Tema = bts1-orange
 *		                layout.php
 home 	                frontpage.php
 organismos/organismos	layout-sem-sidebar.php
+materiais/pv1999        layout-sem-sidebar.php
 
 #
 # Regras para construção das páginas. 
@@ -59,8 +60,9 @@ organismos/msg	extra	organismos/msg_extra
 organismos/*	extra				+organismos/menu
 organismos/*	CAVERNAME_HEAD_ZONE	+organismos/menu-css
 
-# a seguinte linha remove o conteúdo da sidebar, mas ficava melhor sem sidebar
+# as seguintes linhas removem o conteúdo da sidebar
 organismos/organismos	extra	
+materiais/pv1999        extra
 
 parques/parque	extra	parques/ligacoes
 
