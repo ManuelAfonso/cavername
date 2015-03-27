@@ -180,7 +180,23 @@ ul.organismos-menu li a {
   line-height: 170%;
   clear: both;
 }
-.cvrn-message-list
-{
+.cvrn-message-list {
   padding: 20px;
+}
+
+.cvrn-columns p {
+  text-align:left;
+}
+.cvrn-column-only p {
+  text-align:justify;
+}
+.cvrn-column-first  {
+  padding-right:25px; /* mais 10 do que o normal */
+}
+.cvrn-column-mid  {
+  padding-left:20px; /* mais 5 do que o normal */
+  padding-right:20px; /* mais 5 do que o normal */
+}
+.cvrn-column-last  {
+  padding-left:25px; /* mais 10 do que o normal */
 }

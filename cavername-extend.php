@@ -13,6 +13,8 @@ class CavernameExtend
 		 */
 		CavernameFuncoes::AddFunction('pagebreak', '');
 		CavernameFuncoes::AddFunction('chapters', '');
+		CavernameFuncoes::AddFunction('colbreak', '');
+		CavernameFuncoes::AddFunction('colreset', '');
 		/**
 		 * Indicar à função PREG_FunctionsCallback para utilizar estas funções na substituição de conteúdo
 		 */
@@ -34,6 +36,10 @@ class CavernameExtend
 		elseif(	false !== strpos($obj->Html, '<!--chapters-->'))
 		{
 			$obj->Template = new CavernameConteudoTemplateChapters();
+		}
+		elseif(	false !== strpos($obj->Html, '<!--colbreak-->'))
+		{
+			$obj->Template = new CavernameConteudoTemplateColumns();
 		}
 		elseif(0 === strcasecmp("xml", $obj->Extensao))
 		{
@@ -327,7 +333,13 @@ class CavernameConteudoTemplatePages implements ICavernameConteudoTemplate
 			$pos_ini = $pos_fim + strlen($needle);
 			$contador ++;		
 		}
-		$obj->Html = substr($obj->Html, $pos_ini, $pos_fim-$pos_ini);
+		$obj->Html = substr($obj->Html, $pos_ini, $pos_fim-$pos_ini);		
+		// aplicar o template das colunas se for o caso
+		if(	false !== strpos($obj->Html, '<!--colbreak-->'))
+		{
+			$colTemplate = new CavernameConteudoTemplateColumns();
+			$colTemplate->Build($obj);
+		}		
 		// guardar propriedades para navegação 
 		$this->page_complete_url = CavernamePedido::NewWith($obj->Zona, 'p', -1);
 		$this->page_first_url = $this->page_previous_url = $this->page_next_url = $this->page_last_url = '';
@@ -425,6 +437,12 @@ class CavernameConteudoTemplateChapters implements ICavernameConteudoTemplate
             $this->chapter_next = strip_tags($matches[1][$pos+1][0]);
         }
 		$obj->Html = substr($obj->Html, $inicio, $fim - $inicio);
+		// aplicar o template das colunas se for o caso
+		if(	false !== strpos($obj->Html, '<!--colbreak-->'))
+		{
+			$colTemplate = new CavernameConteudoTemplateColumns();
+			$colTemplate->Build($obj);
+		}		
 		// guardar propriedades para navegação 
 		if ($this->chapter_number > 1)
 		{
@@ -457,6 +475,72 @@ class CavernameConteudoTemplateChapters implements ICavernameConteudoTemplate
 						 . "<p>$np $tc $nn</p>" . PHP_EOL
 						 . $obj->Html . PHP_EOL
 						 . "<p>$np $tc $nn</p>" . PHP_EOL; 			
+		}
+		else
+		{
+			include($t);
+		}
+	}
+}
+/** ========================================================================================================== conteúdos com colunas
+ * Divide o texto em colunas 
+ */
+class CavernameConteudoTemplateColumns implements ICavernameConteudoTemplate
+{
+	public function Build(CavernameConteudo $obj)
+	{
+		$this->rows = array();
+		// obter o texto correspondente a cada secção, aqui chamada de row por analogia com uma tabela
+		$needle = '<!--colreset-->';
+		$pos_ini = 0;
+		while (true)
+		{
+			$pos_fim = strpos($obj->Html, $needle, $pos_ini);
+			if ($pos_fim === false)
+			{
+				$s = substr($obj->Html, $pos_ini);
+				if (strlen($s) > 0)	$this->rows[] = $s;
+				break;
+			}
+			$s = substr($obj->Html, $pos_ini, $pos_fim-$pos_ini);
+			if (strlen($s) > 0) $this->rows[] = $s;
+			$pos_ini = $pos_fim + strlen($needle);
+		}		
+		// obter o texto de cada coluna em cada uma das secções.
+		$needle = '<!--colbreak-->';
+		foreach($this->rows as &$row)
+		{			
+			$cols = array();
+			$pos_ini = 0;
+			while (true)
+			{
+				$pos_fim = strpos($row, $needle, $pos_ini);
+				if ($pos_fim === false)
+				{
+					$cols[] = substr($row, $pos_ini);
+					break;
+				}
+				$cols[] = substr($row, $pos_ini, $pos_fim-$pos_ini);
+				$pos_ini = $pos_fim + strlen($needle);
+			}
+			$row = $cols;
+		}
+		$this->Render($obj);
+	}
+	private function Render(CavernameConteudo $obj)
+	{
+		$t = CavernameTema::IncludeTemplate('Tcolumns.php');
+		if ('' === $t)
+		{
+			$obj->Html = "";
+			foreach($this->rows as $row)
+			{	
+				foreach($row as $col)
+				{
+					$obj->Html .= "<div>$col</div>";
+				}
+				$obj->Html .= "<hr />";
+			}
 		}
 		else
 		{
