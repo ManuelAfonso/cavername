@@ -1,6 +1,6 @@
 <?php
-// nota: sÃ³ trata um nÃ­vel de submenus
-include("Toptions.php"); // include porque este cÃ³digo Ã© executado no Ã¢mbito de uma funÃ§Ã£o! NÃ£o se pode fazer include_once() senÃ£o dÃ¡ erro
+// nota: só trata um nível de submenus
+include("Toptions.php"); // include porque este código é executado no âmbito de uma função! Não se pode fazer include_once() senão dá erro
 $buttonCollapse = "";
 $divMenu = "<div>";
 if (1 === $optionsNavigation[$obj->DivId]['collapse'])

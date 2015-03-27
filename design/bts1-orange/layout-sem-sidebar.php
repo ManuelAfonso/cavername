@@ -18,8 +18,7 @@
   </header>
   <div class="container">
 	<div class="row">
-		<section class="col-sm-8" id="content"><?php Cavername::Out('mainzone');?></section>
-		<aside class="col-sm-4 sidebar"><?php Cavername::Out('extra');?></aside>
+		<section class="col-sm-12" id="content"><?php Cavername::Out('mainzone');?></section>
 	</div>		
   </div><!-- container -->
   <footer id="footer">
