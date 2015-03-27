@@ -101,7 +101,15 @@ Como funcionam os templates?
 <!--chapterindex ID--> : Substituído pelo índice de capítulos de um documento, definidos com a tag H2
 <!--chapters-->        : Indica que este documento deve ser paginado por capítulos (CavernameConteudoTemplateChapters)
 <!--pagebreak-->       : Indica os locais onde muda a página deste documento para fazer paginação (CavernameConteudoTemplatePages)
+<!--colbreak-->        : Assinala uma quebra de coluna (CavernameConteudoTemplateColumns)
+<!--colreset-->        : Indica que a divisão por colunas deve ser reiniciada (CavernameConteudoTemplateColumns)
 <navigation>           : Indica que se trata de um ficheiro com um menu de navegação (só ficheiros XML)
+
+==== Notas sobre a divisão de colunas ====
+O número de colunas deve ser 2, 3, 4 ou 6.
+O resultado nunca fica muito bem porque a diferença de espaço ocupado por cada coluna varia de acordo com a largura
+das colunas. Basta reduzir um pouco e uma palavra passa para a linha seguinte, enquanto na outra coluna nada se alterou.
+Por isso, é muito dfícil que as colunas fiquem alinhadas em baixo, como num jornal.
 
 ===== Lista de funções =====
 @CavernameMensagens:MensagensDebug - constrói lista com as mensagens de debug
@@ -117,8 +125,9 @@ CavernameConteudoTemplateNavigation   : implementa construção de menu de naveg
 CavernameConteudoTemplateInclude      : implementa construção de include
 CavernameConteudoTemplateExcerpt      : implementa construção de excerto
 CavernameConteudoTemplateChapterIndex : implementa construção de índice de capítulos
-CavernameConteudoTemplatePages        : implementa construção de docs paginados
-CavernameConteudoTemplateChapters     : implementa construção de docs paginados por capítulo
+CavernameConteudoTemplatePages        : implementa construção de docs paginados (inclui CavernameConteudoTemplateColumns)
+CavernameConteudoTemplateChapters     : implementa construção de docs paginados por capítulo (inclui CavernameConteudoTemplateColumns)
+CavernameConteudoTemplateColumns      : implementa divisão de textos em colunas
 
 ===== Ficheiros necessários para o tema =====
 Tem que existir pelo menos um ficheiro que construa todo o HTML de uma página e que utilize o método Cavername::Out('zona') para
@@ -133,6 +142,8 @@ Outros ficheiros são opcionais e servem para construir o HTML específico de ca
  * Texcerpt.php
  * Tchapter-index.php
  * Tmessage-list.php
+ * Tcolumns.php
+ * Tnavigation.php
   
 ===== Parâmetros por zona =====
 Os parâmetros são automaticamente compostos com o nome da zona, por exemplo: **mainzone-p=2** indica que o 
