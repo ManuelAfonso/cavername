@@ -1,0 +1,6 @@
+-- página principal
+Título grande, sem menu
+Excerto + Read more dentro do título, com fundo escuro
+3 colunas, cada uma com um título e uma descrição, com fundo branco
+Parques | Organismos | Materiais
+Footer com todas as ligações – incluindo vídeos, organizadas por tipos e sem imagens (talvez seja possível usar os conteúdos atuais)
