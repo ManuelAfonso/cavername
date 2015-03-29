@@ -490,40 +490,10 @@ class CavernameConteudoTemplateColumns implements ICavernameConteudoTemplate
 	public function Build(CavernameConteudo $obj)
 	{
 		$this->rows = array();
-		// obter o texto correspondente a cada secção, aqui chamada de row por analogia com uma tabela
-		$needle = '<!--colreset-->';
-		$pos_ini = 0;
-		while (true)
-		{
-			$pos_fim = strpos($obj->Html, $needle, $pos_ini);
-			if ($pos_fim === false)
-			{
-				$s = substr($obj->Html, $pos_ini);
-				if (strlen($s) > 0)	$this->rows[] = $s;
-				break;
-			}
-			$s = substr($obj->Html, $pos_ini, $pos_fim-$pos_ini);
-			if (strlen($s) > 0) $this->rows[] = $s;
-			$pos_ini = $pos_fim + strlen($needle);
-		}		
-		// obter o texto de cada coluna em cada uma das secções.
-		$needle = '<!--colbreak-->';
+		$this->rows = explode('<!--colreset-->', $obj->Html);
 		foreach($this->rows as &$row)
 		{			
-			$cols = array();
-			$pos_ini = 0;
-			while (true)
-			{
-				$pos_fim = strpos($row, $needle, $pos_ini);
-				if ($pos_fim === false)
-				{
-					$cols[] = substr($row, $pos_ini);
-					break;
-				}
-				$cols[] = substr($row, $pos_ini, $pos_fim-$pos_ini);
-				$pos_ini = $pos_fim + strlen($needle);
-			}
-			$row = $cols;
+			$row = explode('<!--colbreak-->', $row);
 		}
 		$this->Render($obj);
 	}
@@ -535,11 +505,7 @@ class CavernameConteudoTemplateColumns implements ICavernameConteudoTemplate
 			$obj->Html = "";
 			foreach($this->rows as $row)
 			{	
-				foreach($row as $col)
-				{
-					$obj->Html .= "<div>$col</div>";
-				}
-				$obj->Html .= "<hr />";
+				$obj->Html .= "<div>" . implode('</div><div>', $row) . "</div><hr />";
 			}
 		}
 		else
