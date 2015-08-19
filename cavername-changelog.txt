@@ -4,6 +4,7 @@ Cavername 2, em curso
 - Criação da classe CavernameConteudoTemplateNavigation para implementação de menus definidos num ficheiro XML (issue #31)
 - Correção de bug que impedia a criação de mensagens de debug em algumas circunstâncias (sem issue)
 - Correção no tratamento de erros (sem issue)
+- Apresentação de textos em multi-coluna com utilização de macros (issue #19)
 
 Cavername 1, 2015-03-20
 ------------------------
