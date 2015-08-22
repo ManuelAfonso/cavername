@@ -46,12 +46,8 @@ libxml_use_internal_errors(true); // indica que os erros dos ficheiros XML são 
 	define('CAVERNAME_CONTEUDOS_FOLDER', dirname(__FILE__).'/conteudo/'); 
 	// localização dos temas (NÃO PODE ser fora do site porque o browser vai pedir os CSS, JS, etc.)
 	define('CAVERNAME_DESIGN_FOLDER', dirname(__FILE__).'/design/'); 
-	// identificação para especificar o layout de uma página nas regras de construção da página
-	define('CAVERNAME_LAYOUT_PSEUDOZONE', '__layout__'); 
 	// macro que será substituída pelo id da página
 	define('CAVERNAME_SPECIAL_CONTENT_MAIN', '__maincontent__'); 
-	// usado em algumas conversões
-	define('CAVERNAME_ENCODING', 'UTF-8');
 	// id do conteúdo para erros 404
 	define('CAVERNAME_404', '404');
 	// separador classe/função 
@@ -241,8 +237,8 @@ class Cavername
 			CavernameMensagens::Debug('PHP_SELF=' . $_SERVER['PHP_SELF']);
 			CavernameMensagens::Debug('CAVERNAME_SELF_DIR=' . CAVERNAME_SELF_DIR);
 		}		
-		// Obter o idioma predefinido a partir do browser considerando o código de 2 letras
-        if ( isset($_SERVER['HTTP_ACCEPT_LANGUAGE'] ))
+		// Obter o idioma predefinido a partir do browser considerando o código de 2 letras (apenas para sites multi-idioma)
+        if ( isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && '1' === CavernameDB::$Config['multiidioma'] )
         {
 			if (CAVERNAME_DEBUG) CavernameMensagens::Debug('HTTP_ACCEPT_LANGUAGE=' . $_SERVER['HTTP_ACCEPT_LANGUAGE']); // en-US,en;q=0.8,pt;q=0.6,es;q=0.4
             $l1 = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
@@ -336,7 +332,7 @@ class Cavername
 	/**
 	 * Constrói uma string com o título do site e o título do artigo dentro da tag <title>
 	 */
-	public function TituloSiteComposto()
+	private function TituloSiteComposto()
 	{
 		$s = $this->TituloSite;
 		if ('' !== $this->TituloArtigoPrincipal)
@@ -344,6 +340,10 @@ class Cavername
 			$s .= ' - ' . $this->TituloArtigoPrincipal;
 		}
 		return sprintf(CAVERNAMEw_title, $s);
+	}
+	public static function Idioma()
+	{
+		echo Cavername::One()->Idioma;
 	}
 }
 /**
@@ -471,8 +471,8 @@ class CavernamePedido
 			if ('' === $value) $value = '1';
 			// O strip_tags é usado para prevenir a inserção de código malicioso, por exemplo:
 			// http://localhost/dados/mh2/?a=<script>alert('Injected!');</script>
-			$key = strip_tags($key);//, ENT_QUOTES, CAVERNAME_ENCODING);
-			$value = strip_tags($value);//, ENT_QUOTES, CAVERNAME_ENCODING);
+			$key = strip_tags($key);
+			$value = strip_tags($value);
 			self::$data[$key] = $value;
 			if (CAVERNAME_DEBUG) CavernameMensagens::Debug($key.'='.$value);
 		}
@@ -546,6 +546,7 @@ class CavernameDB
 	 */
 	public static $Config = array('homepage' => '', 
 								  'idioma' => '',
+								  'multiidioma' => '',
 								  'tema' => '');
 	private static function trata_config($line)
 	{
@@ -947,8 +948,6 @@ class CavernameConteudo
 		else
 		{
 			$this->Html = file_get_contents($this->Path);
-			//$this->Html = mb_convert_encoding(file_get_contents($this->Path), CAVERNAME_ENCODING);
-			//$this->Html = "[" . mb_detect_encoding($this->Html) . "<br />" . $this->Html;
 		}
 		// Remover tudo o que estiver fora da body tag, incluíndo a própria tag, 
 		// para o caso de se estar a carregar uma página completa.

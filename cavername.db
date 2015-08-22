@@ -1,12 +1,15 @@
 # As linhas que começam com # são ignoradas
 # As colunas de cada linha devem ser separadas por espaços, tabulações ou sinal de igual
+# É importante que todos as palavras usem apenas caracteres simples. O script utiliza muitas funções
+# do PHP que só trabalham bem com single byte chars. Ver http://php.net/manual/en/language.types.string.php (Details of the String Type)
 
 #
 # Definições gerais e aspetos gerais do site: tema e idioma por omissão
-#
+# Idioma: http://www.w3schools.com/tags/ref_language_codes.asp ISO 639-1
 [config]
 HomePage = home
 Idioma = pt
+Multiidioma = 0
 Tema = bts1-orange
 
 #
@@ -60,11 +63,11 @@ organismos/msg	extra	organismos/msg_extra
 organismos/*	extra				+organismos/menu
 organismos/*	CAVERNAME_HEAD_ZONE	+organismos/menu-css
 
+parques/parque	extra	parques/ligacoes
+
 # as seguintes linhas removem o conteúdo da sidebar
 organismos/organismos	extra	
 materiais/pv1999        extra
-
-parques/parque	extra	parques/ligacoes
 
 #
 #Definir redirecionamentos. Pode ser útil para quando uma página muda de local ou de nome.

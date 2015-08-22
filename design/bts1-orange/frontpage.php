@@ -1,6 +1,6 @@
 <?php require('common.php'); ?>
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="<?php Cavername::Idioma(); ?>">
 <head>
   <?php Cavername::Out(CAVERNAME_HEAD_ZONE);?>
   <meta name="viewport" content="width=device-width, initial-scale=1">
