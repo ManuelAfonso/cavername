@@ -4,7 +4,7 @@ if (file_exists('cavername-extend.php')) include_once('cavername-extend.php');
  * Definir controlo de erros e mensagens de debug
  */
 {
-define('CAVERNAME_DEBUG', true); // debug - cria uma lista de mensagens
+define('CAVERNAME_DEBUG', false); // debug - cria uma lista de mensagens
 define('CAVERNAME_DUMP', false); // debug - faz o output do objeto Cavername
 function CavernameErrorHandler($errno, $errstr, $errfile, $errline)
 {
