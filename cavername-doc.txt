@@ -10,7 +10,7 @@ O parâmetro principal tem apenas uma letra (a) e identifica o conteúdo que vai
 os conteúdos a colocar noutras zonas e o esquema da página. 
 Tudo isto é definido no ficheiro cavername.db (ver comentários no próprio ficheiro).
 
-Normalmente os conteúdos encontram-se definidos em ficheiros contido na sub-pasta CONTEUDO. Para estes casos,
+Normalmente os conteúdos encontram-se definidos em ficheiros contidos na sub-pasta CONTEUDO. Para estes casos,
 a identificação do conteúdo é o próprio caminho do ficheiro, sem extensão, por exemplo:
  * O id do ficheiro conteudo/materiais/pv1999.htm é materiais/pv1999.
  
