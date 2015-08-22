@@ -489,7 +489,6 @@ class CavernameConteudoTemplateColumns implements ICavernameConteudoTemplate
 {
 	public function Build(CavernameConteudo $obj)
 	{
-		$this->rows = array();
 		$this->rows = explode('<!--colreset-->', $obj->Html);
 		foreach($this->rows as &$row)
 		{			
