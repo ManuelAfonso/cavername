@@ -1,4 +1,4 @@
-Cavername 2, em curso
+Cavername 2, 2015-08-24
 ------------------------
 - Definição de um método para tratamento de ficheiros XML em geral (issue #31)
 - Criação da classe CavernameConteudoTemplateNavigation para implementação de menus definidos num ficheiro XML (issue #31)
