@@ -21,21 +21,31 @@ class CavernameExtend
 		CavernameFuncoes::AddFunction('include', 'CavernameConteudoTemplateInclude:Callback'); 
 		CavernameFuncoes::AddFunction('excerpt', 'CavernameConteudoTemplateExcerpt:Callback');		
 		CavernameFuncoes::AddFunction('chapterindex', 'CavernameConteudoTemplateChapterIndex:Callback');
+		CavernameFuncoes::AddFunction('bilingue', 'CavernameConteudoTemplateBilingue:Callback');
 	}
 	/**
 	 * Função chamada depois de ler um documento e que permite
 	 * identificar o tipo de template com base no texto ou
-	 * outra propriedade do conteúdo.
+	 * outra propriedade do conteúdo. 
+	 * A ordem é importante! Por exemplo, se tiver paginação, tem que aplicar antes da divisão em colunas.
 	 */
 	public static function ExtendConteudo(CavernameConteudo $obj)
 	{
 		if(	false !== strpos($obj->Html, '<!--pagebreak-->'))
 		{
 			$obj->Template = new CavernameConteudoTemplatePages();
+			if(	false !== strpos($obj->Html, '<!--colbreak-->'))
+			{
+				$obj->Template->SetMainContentTemplate(new CavernameConteudoTemplateColumns()); 
+			}
 		}		
 		elseif(	false !== strpos($obj->Html, '<!--chapters-->'))
 		{
 			$obj->Template = new CavernameConteudoTemplateChapters();
+			if(	false !== strpos($obj->Html, '<!--colbreak-->'))
+			{
+				$obj->Template->SetMainContentTemplate(new CavernameConteudoTemplateColumns()); 
+			}
 		}
 		elseif(	false !== strpos($obj->Html, '<!--colbreak-->'))
 		{
@@ -270,7 +280,6 @@ class CavernameConteudoTemplateChapterIndex implements ICavernameConteudoTemplat
 			$obj->Html = '';
             return;
         }      
-		$obj->template = 'chapter-index';
 		$this->chapter_index_list = array();
         foreach($matches[1] as $k => $h)
         {
@@ -300,8 +309,19 @@ class CavernameConteudoTemplateChapterIndex implements ICavernameConteudoTemplat
 /** ========================================================================================================== conteúdos paginados
  * Obtém o conteúdo da página requisitada
  */
-class CavernameConteudoTemplatePages implements ICavernameConteudoTemplate
+class CavernameConteudoTemplatePages implements ICavernameConteudoTemplate, ICavernameConteudoTemplateWithNavigation
 {
+	private $templateForPage;
+	private $withoutNavigation = false;
+	public function BuildWithoutNavigation(CavernameConteudo $obj)
+	{
+		$this->withoutNavigation = true;
+		$this->Build($obj);
+	}
+	public function SetMainContentTemplate(ICavernameConteudoTemplate $template)
+	{
+		$this->templateForPage = $template;
+	}
 	public function Build(CavernameConteudo $obj)
 	{
 		// Este parâmetro é composto por <zona>-p=<nº da página>
@@ -333,13 +353,16 @@ class CavernameConteudoTemplatePages implements ICavernameConteudoTemplate
 			$pos_ini = $pos_fim + strlen($needle);
 			$contador ++;		
 		}
-		$obj->Html = substr($obj->Html, $pos_ini, $pos_fim-$pos_ini);		
-		// aplicar o template das colunas se for o caso
-		if(	false !== strpos($obj->Html, '<!--colbreak-->'))
+		$obj->Html = substr($obj->Html, $pos_ini, $pos_fim-$pos_ini);
+		if ($this->withoutNavigation)
 		{
-			$colTemplate = new CavernameConteudoTemplateColumns();
-			$colTemplate->Build($obj);
-		}		
+			return;
+		}
+		// aplica template "secundário" na página
+		if ($this->templateForPage != null && $this->templateForPage instanceof ICavernameConteudoTemplate)
+		{
+			$this->templateForPage->Build($obj);			
+		}
 		// guardar propriedades para navegação 
 		$this->page_complete_url = CavernamePedido::NewWith($obj->Zona, 'p', -1);
 		$this->page_first_url = $this->page_previous_url = $this->page_next_url = $this->page_last_url = '';
@@ -398,8 +421,19 @@ class CavernameConteudoTemplatePages implements ICavernameConteudoTemplate
 /** ========================================================================================================== conteúdos com capítulos
  * Obtém o conteúdo do capítulo requisitado
  */
-class CavernameConteudoTemplateChapters implements ICavernameConteudoTemplate
+class CavernameConteudoTemplateChapters implements ICavernameConteudoTemplate, ICavernameConteudoTemplateWithNavigation
 {
+	private $templateForPage;
+	private $withoutNavigation = false;
+	public function BuildWithoutNavigation(CavernameConteudo $obj)
+	{
+		$this->withoutNavigation = true;
+		$this->Build($obj);
+	}
+	public function SetMainContentTemplate(ICavernameConteudoTemplate $template)
+	{
+		$this->templateForPage = $template;
+	}
 	public function Build(CavernameConteudo $obj)
 	{
 		// Este parâmetro é composto por <zona>-c=<nº da capítulo>
@@ -437,12 +471,15 @@ class CavernameConteudoTemplateChapters implements ICavernameConteudoTemplate
             $this->chapter_next = strip_tags($matches[1][$pos+1][0]);
         }
 		$obj->Html = substr($obj->Html, $inicio, $fim - $inicio);
-		// aplicar o template das colunas se for o caso
-		if(	false !== strpos($obj->Html, '<!--colbreak-->'))
+		if ($this->withoutNavigation)
 		{
-			$colTemplate = new CavernameConteudoTemplateColumns();
-			$colTemplate->Build($obj);
-		}		
+			return;
+		}
+		// aplica template "secundário" no capítulo, ou seja, no conteúdo atual da propridade Html
+		if ($this->templateForPage != null && $this->templateForPage instanceof ICavernameConteudoTemplate)
+		{
+			$this->templateForPage->Build($obj);			
+		}
 		// guardar propriedades para navegação 
 		if ($this->chapter_number > 1)
 		{
@@ -505,6 +542,101 @@ class CavernameConteudoTemplateColumns implements ICavernameConteudoTemplate
 			foreach($this->rows as $row)
 			{	
 				$obj->Html .= "<div>" . implode('</div><div>', $row) . "</div><hr />";
+			}
+		}
+		else
+		{
+			include($t);
+		}
+	}
+}
+/** ========================================================================================================== bilingue
+ * Inclui 2 ficheiros, lado a lado, para apresentação lado a lado (bilingue)
+ */
+class CavernameConteudoTemplateBilingue implements ICavernameConteudoTemplate
+{
+	public $IdSegundoConteudo;
+	public $IdiomaSegundoConteudo;
+	public static function Bilingue(CavernameConteudo $obj)
+	{	
+		$obj->Html = 
+		CavernameConteudoTemplateBilingue::Callback( 
+			CavernamePedido::Get($obj->Zona, 'artigo', "").";".CavernamePedido::Get($obj->Zona, 'idioma', ""),
+			"",
+			$obj);
+	}
+	public static function Callback($idAndIdioma, $original, $parent)
+	{
+		$params = explode(';', $idAndIdioma);
+		if (count($params) != 2)
+		{
+			if (CAVERNAME_DEBUG) CavernameMensagens::Debug("CavernameConteudoTemplateBilingue::Callback-invalid params $idAndIdioma");
+			return $original;
+		}
+		$obj = new CavernameConteudo($params[0], $parent->Zona, false);
+		$obj->AplicarFiltrosGerais();
+		if ($obj->Template instanceof ICavernameConteudoTemplateWithNavigation)
+		{
+			// criamos um template Bilingue que se irá aplicar mais tarde, apenas à parte do texto
+			$temp = new CavernameConteudoTemplateBilingue();	
+			$temp->IdSegundoConteudo = $params[0];
+			$temp->IdiomaSegundoConteudo = $params[1];
+			
+			// dizemos ao template que faz a paginação que o conteúdo tem que passar 
+			// também por um template.
+			$obj->Template->SetMainContentTemplate($temp); 
+			
+			// ... e passamos o controlo para esse template.
+			$obj->AplicarTemplate();
+			return $obj->Html;		
+		}
+		else
+		{
+			$obj->Template = new CavernameConteudoTemplateBilingue();		
+			$obj->Template->IdSegundoConteudo = $params[0];
+			$obj->Template->IdiomaSegundoConteudo = $params[1];
+			$obj->AplicarTemplate();
+			return $obj->Html;		
+		}
+	}
+	public function Build(CavernameConteudo $obj)
+	{
+		$segundo = new CavernameConteudo($this->IdSegundoConteudo, $obj->Zona, false, $this->IdiomaSegundoConteudo);
+		$segundo->AplicarFiltrosGerais();
+		if ($segundo->Template instanceof ICavernameConteudoTemplateWithNavigation)
+		{
+			$segundo->Template->BuildWithoutNavigation($segundo);
+		}
+	
+		// Dividir cada Html em partes para que sejam apesentados em rows separadas, mantendo 
+		// o paralelo entre os textos		
+		// Esta expressão regular apanha os vários blocos (desde que estejam bem fechados). Esta funcionalidade fica dependente disso.
+		preg_match_all('/<([A-Za-z0-9]+)[^>]*>(.*?)<\/\1>/is', $obj->Html, $matchesMain);
+		preg_match_all('/<([A-Za-z0-9]+)[^>]*>(.*?)<\/\1>/is', $segundo->Html, $matchesSecond);
+		if (count($matchesMain[0])!=count($matchesSecond[0]))
+		{
+			if (CAVERNAME_DEBUG) CavernameMensagens::Debug("CavernameConteudoTemplateBilingue::count(matchesMain)!=count(matchesSecond):" . count($matchesMain[0]) . "!=" . count($matchesSecond[0]));
+			return;
+		}
+		$this->rows = array(count($matchesMain[0]));
+		for( $kontador=0; $kontador < count($matchesMain[0]); $kontador++)
+		{
+			$this->rows[] = array($kontador, $matchesMain[0][$kontador], $matchesSecond[0][$kontador]);			
+		}		
+		$this->Render($obj);
+	}
+	private function Render(CavernameConteudo $obj)
+	{
+		$t = CavernameTema::IncludeTemplate('Tbilingue.php');
+		if ('' === $t)
+		{
+			$obj->Html = "";
+			foreach ($this->rows as $bloc)
+			{
+				$obj->Html .= "<div>
+							   <div>{$bloc[1]}</div>
+							   <div>{$bloc[2]}</div>
+							   </div><hr />";
 			}
 		}
 		else

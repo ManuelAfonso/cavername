@@ -1,0 +1,12 @@
+<div class="only-for-excerpt">
+<h1>A cura do sofrimento</h1>
+  <p>Esta &eacute; a primeira interven&ccedil;&atilde;o p&uacute;blica de Silo. 
+  Com uma envolvente mais ou menos po&eacute;tica, explica-se que o conhecimento mais importante para a vida (&ldquo;a real sabedoria&rdquo;)
+  n&atilde;o coincide com o conhecimento de livros, de leis universais,
+  etc., mas sim que &eacute; uma quest&atilde;o de experi&ecirc;ncia
+  pessoal, &iacute;ntima. O conhecimento mais importante para a vida
+  est&aacute; referido &agrave; compreens&atilde;o do sofrimento e &agrave;
+  sua supera&ccedil;&atilde;o.</p>
+</div>
+<!--more-->
+<!--bilingue materiais/cura_sofrimento;es-->

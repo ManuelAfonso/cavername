@@ -184,7 +184,8 @@ class Cavername
 		CavernameTema::$Id = CavernameDB::$Config['tema'];
 		
 		// Definições de sistema
-		// CavernameDB::AddAlias('cavername-debug', '@CavernameMensagens:MensagensDebug');
+		CavernameDB::AddAlias('cavername-debug', '@CavernameMensagens:MensagensDebug');
+		CavernameDB::AddAlias('cavername-bilingue', '@CavernameConteudoTemplateBilingue:Bilingue');
 
 		// Carregar informação do servidor e browser (caminhos, idioma, etc.)
 		self::LoadAmbiente();
@@ -796,6 +797,7 @@ class CavernameConteudo
 	public $Url = '';
 	public $ApplyFilters;
 	public $Template;
+	public $Idioma;
 	
 	public $Html = '';
 	public $Data;
@@ -805,13 +807,21 @@ class CavernameConteudo
 	/**
 	 * O construtor procura e carrega o conteúdo na propriedade $Html. Só aplica filtros e templates se assim for indicado.
 	 */
-	public function __construct($idConteudo, $idZona, $aplicarFiltrosTemplate = false)
+	public function __construct($idConteudo, $idZona, $aplicarFiltrosTemplate = false, $idioma = "")
 	{
 		// Inicialização
 		{
 			$this->Template = new CavernameConteudoTemplateNone();
 			$this->Zona = $idZona;
 			$this->Id = $idConteudo; 
+			if ($idioma == "")
+			{
+				$this->Idioma = Cavername::One()->Idioma;
+			}
+			else
+			{
+				$this->Idioma = $idioma;
+			}
 			// troca a macro CAVERNAME_SPECIAL_CONTENT_MAIN pelo Id da página solicitada
 			if (CAVERNAME_SPECIAL_CONTENT_MAIN === $this->Id)
 			{
@@ -858,7 +868,7 @@ class CavernameConteudo
 		}				
 		// Controlo de recursividade - se o artigo solicitado já foi processado é porque é "pai" do objeto atual.
 		// Se o voltarmos a processar entraria num loop infinito.
-		if (false === CavernameRecursiveControl::TestAndPush($this->Id))
+		if (false === CavernameRecursiveControl::TestAndPush($this->Id.$this->Idioma))
 		{
 			$this->ApplyFilters = false; 
 		}
@@ -1022,23 +1032,19 @@ class CavernameConteudo
 	 * Procura um ficheiro com base no id, idioma e extensões possíveis.
 	 * Retorna o caminho completo do ficheiro.
 	 * Ordem de apresentação:
-	 *	 {id}.{lang}.{ext}.draft  se {id}.{lang}.{ext} existir
-	 *	 {id}.{lang}.{ext}.cache  se {id}.{lang}.{ext} existir
 	 *	 {id}.{lang}.{ext}        se {id}.{lang}.{ext} existir
-	 *	 {id}.{ext}.draft         se {id}.{ext} existir
-	 *	 {id}.{ext}.cache         se {id}.{ext} existir
 	 *	 {id}.{ext}               se {id}.{ext} existir
 	 */
     private function procuraFicheiro()
     {		
 		// Procura o ficheiro no idioma definido no sistema	
-		$resultado = $this->procuraPorExtensoes(CAVERNAME_CONTEUDOS_FOLDER . $this->Id . '.' . Cavername::One()->Idioma);		
+		$resultado = $this->procuraPorExtensoes(CAVERNAME_CONTEUDOS_FOLDER . $this->Id . '.' . $this->Idioma);		
 		// Se não encontrar, pesquisa sem idioma
 		if ('' === $resultado) $resultado = $this->procuraPorExtensoes(CAVERNAME_CONTEUDOS_FOLDER . $this->Id);		
 		// Se não encontrar, termina - não procura cache nem draft
 		if ('' === $resultado)
 		{
-			$resultado = $this->procuraPorExtensoes(CAVERNAME_CONTEUDOS_FOLDER . CAVERNAME_404 . '.' . Cavername::One()->Idioma);		
+			$resultado = $this->procuraPorExtensoes(CAVERNAME_CONTEUDOS_FOLDER . CAVERNAME_404 . '.' . $this->Idioma);		
 			if ('' === $resultado) $resultado = $this->procuraPorExtensoes(CAVERNAME_CONTEUDOS_FOLDER . CAVERNAME_404);
 			return $resultado;
 		}				
@@ -1252,6 +1258,11 @@ class CavernameRecursiveControl
 interface ICavernameConteudoTemplate
 {
 	public function Build(CavernameConteudo $obj);
+}
+interface ICavernameConteudoTemplateWithNavigation
+{
+	public function BuildWithoutNavigation(CavernameConteudo $obj);
+	public function SetMainContentTemplate(ICavernameConteudoTemplate $template);
 }
 class CavernameConteudoTemplateNone implements ICavernameConteudoTemplate
 {

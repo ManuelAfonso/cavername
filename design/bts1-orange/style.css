@@ -200,3 +200,13 @@ ul.organismos-menu li a {
 .cvrn-column-last  {
   padding-left:25px; /* mais 10 do que o normal */
 }
+.cvrn-bilingue-first  {
+  padding-right:35px; /* mais 20 do que o normal */
+}
+.cvrn-bilingue-second  {
+  padding-left:35px; /* mais 20 do que o normal */
+  background-color:#F5F3F1;
+}
+.cvrn-bilingue  {
+  margin-bottom: 10px;
+}

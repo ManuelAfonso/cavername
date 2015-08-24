@@ -21,6 +21,8 @@ Tema = bts1-orange
 home 	                frontpage.php
 organismos/organismos	layout-sem-sidebar.php
 materiais/pv1999        layout-sem-sidebar.php
+materiais/pv1969_bilingue        layout-sem-sidebar.php
+cavername-bilingue	layout-sem-sidebar.php
 
 #
 # Regras para construção das páginas. 
@@ -68,6 +70,7 @@ parques/parque	extra	parques/ligacoes
 # as seguintes linhas removem o conteúdo da sidebar
 organismos/organismos	extra	
 materiais/pv1999        extra
+materiais/pv1969_bilingue	extra
 
 #
 #Definir redirecionamentos. Pode ser útil para quando uma página muda de local ou de nome.
