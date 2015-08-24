@@ -104,6 +104,7 @@ Como funcionam os templates?
 <!--colbreak-->        : Assinala uma quebra de coluna (CavernameConteudoTemplateColumns)
 <!--colreset-->        : Indica que a divisão por colunas deve ser reiniciada (CavernameConteudoTemplateColumns)
 <navigation>           : Indica que se trata de um ficheiro com um menu de navegação (só ficheiros XML)
+<!--bilingue ID;idioma--> : Substituído por pela apresentação de dois textos, um no idioma atual e o equivalente no idioma indicado
 
 ==== Notas sobre a divisão de colunas ====
 O número de colunas deve ser 2, 3, 4 ou 6.
@@ -114,6 +115,8 @@ Por isso, é muito dfícil que as colunas fiquem alinhadas em baixo, como num jo
 ===== Lista de funções =====
 @CavernameMensagens:MensagensDebug - constrói lista com as mensagens de debug
 @CavernameMensagens:MensagensErro - constrói lista com as mensagens de erro não fatais
+@CavernameConteudoTemplateBilingue:Bilingue - equivalente ao bilingue - devem ser passados parâmetros com o id do artigo e idioma, p.ex.
+<site>/?a=cavername-bilingue&mainzone-artigo=materiais/pv1999&mainzone-idioma=es
 
 ===== Templates em cavername.php =====
 CavernameConteudoTemplateNone        : Não faz nenhuma transformação
@@ -128,6 +131,7 @@ CavernameConteudoTemplateChapterIndex : implementa construção de índice de ca
 CavernameConteudoTemplatePages        : implementa construção de docs paginados (inclui CavernameConteudoTemplateColumns)
 CavernameConteudoTemplateChapters     : implementa construção de docs paginados por capítulo (inclui CavernameConteudoTemplateColumns)
 CavernameConteudoTemplateColumns      : implementa divisão de textos em colunas
+CavernameConteudoTemplateBilingue	  : implementa apresentação de textos em dois idiomas
 
 ===== Ficheiros necessários para o tema =====
 Tem que existir pelo menos um ficheiro que construa todo o HTML de uma página e que utilize o método Cavername::Out('zona') para
@@ -144,6 +148,7 @@ Outros ficheiros são opcionais e servem para construir o HTML específico de ca
  * Tmessage-list.php
  * Tcolumns.php
  * Tnavigation.php
+ * Tbilingue.php
   
 ===== Parâmetros por zona =====
 Os parâmetros são automaticamente compostos com o nome da zona, por exemplo: **mainzone-p=2** indica que o 

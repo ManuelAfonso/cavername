@@ -6,6 +6,7 @@ Cavername 2, em curso
 - Correção no tratamento de erros (sem issue)
 - Apresentação de textos em multi-coluna com utilização de macros (issue #19)
 - Acrescentar o atributo lang na tag HTML (issue #4)
+- Apresentação de textos em dois idiomas (issue #20)
 
 Cavername 1, 2015-03-20
 ------------------------
