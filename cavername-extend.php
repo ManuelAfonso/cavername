@@ -128,9 +128,10 @@ class CavernameConteudoTemplateNavigation implements ICavernameConteudoTemplate
 				}
 				$item->Link = CavernamePedido::Create($item->Link);
 			}
-			if (1 === $link->count() && 0 === strcasecmp("linklist", $link->children()[0]->getName()))
+			$chd = $link->children();
+			if (1 === $link->count() && 0 === strcasecmp("linklist", $chd[0]->getName()))
 			{
-				$item->Submenu = $this->xmlToArray($link->children()[0], $obj);
+				$item->Submenu = $this->xmlToArray($chd[0], $obj);
 			}
 			$item->Prepare();
 			$its[] = $item;
