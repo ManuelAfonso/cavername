@@ -102,7 +102,7 @@ class CavernameConteudoTemplateNavigation implements ICavernameConteudoTemplate
 	public function Build(CavernameConteudo $obj)
 	{
 		$this->linkHome = '?';
-		$this->siteTitle = Cavername::One()->TituloSite;
+		$this->siteTitle = Cavername::$TituloSite;
 		$obj->Data = $this->xmlToArray($obj->Data, $obj);
 		$this->Render($obj);
 	}

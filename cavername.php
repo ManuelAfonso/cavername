@@ -4,29 +4,29 @@ if (file_exists('cavername-extend.php')) include_once('cavername-extend.php');
  * Definir controlo de erros e mensagens de debug
  */
 {
-define('CAVERNAME_DEBUG', false); // debug - cria uma lista de mensagens
-define('CAVERNAME_DUMP', false); // debug - faz o output do objeto Cavername
-function CavernameErrorHandler($errno, $errstr, $errfile, $errline)
-{
-	// erros não fatais - acrescenta linha na lista de debug 
-	if (CAVERNAME_DEBUG) CavernameMensagens::ErroPHP($errno, $errstr, $errfile, $errline);
-	return true; // indica ao PHP para não fazer nada com o erro
-}
-function CavernameShutdown()
-{
-	$error = error_get_last();
-    if ($error !== NULL) 
+	define('CAVERNAME_DEBUG', true); // debug - cria uma lista de mensagens
+	define('CAVERNAME_DUMP', false); // debug - faz o output do objeto Cavername
+	function CavernameErrorHandler($errno, $errstr, $errfile, $errline)
 	{
-		// erros fatais - mostra uma página que pode ter a mensagem de erro se estiver em modo debug
-		$cavername_error_message = '';
-		if (CAVERNAME_DEBUG) $cavername_error_message = sprintf('[%1$s] %2$s %3$s %4$s', $error['type'], $error['message'], $error['file'], $error['line']);
-		CavernameStrings::FatalError($cavername_error_message);
-    }
-}
-set_error_handler('CavernameErrorHandler'); // regista uma função para tratar os erros
-register_shutdown_function('CavernameShutdown'); // regista uma função a executar quando o sistema termina
-ini_set('display_errors', false); // indica que não deve ser feito output dos erros
-libxml_use_internal_errors(true); // indica que os erros dos ficheiros XML são tratados pelo script
+		// erros não fatais - acrescenta linha na lista de debug 
+		if (CAVERNAME_DEBUG) CavernameMensagens::ErroPHP($errno, $errstr, $errfile, $errline);
+		return true; // indica ao PHP para não fazer nada com o erro
+	}
+	function CavernameShutdown()
+	{
+		$error = error_get_last();
+		if ($error !== NULL) 
+		{
+			// erros fatais - mostra uma página que pode ter a mensagem de erro se estiver em modo debug
+			$cavername_error_message = '';
+			if (CAVERNAME_DEBUG) $cavername_error_message = sprintf('[%1$s] %2$s %3$s %4$s', $error['type'], $error['message'], $error['file'], $error['line']);
+			CavernameStrings::FatalError($cavername_error_message);
+		}
+	}
+	set_error_handler('CavernameErrorHandler'); // regista uma função para tratar os erros
+	register_shutdown_function('CavernameShutdown'); // regista uma função a executar quando o sistema termina
+	ini_set('display_errors', false); // indica que não deve ser feito output dos erros
+	libxml_use_internal_errors(true); // indica que os erros dos ficheiros XML são tratados pelo script
 }
 /**
  * Definições que não é obrigatório costumizar
@@ -155,32 +155,21 @@ libxml_use_internal_errors(true); // indica que os erros dos ficheiros XML são 
  */
 class Cavername
 {
-	public $TituloSite = '';
-	public $TituloArtigoPrincipal = '';
-	public $Idioma = '';
-	public $Zonas = array();
-	/**
-	 * O método que implementa a Singleton Pattern
-	 */
-	public static function One()
-	{
-		static $onlyInstance = null;
-		if (null === $onlyInstance) {
-			$onlyInstance = new Cavername();
-		}
-		return $onlyInstance;
-	}
+	public static $TituloSite = '';
+	public static $TituloArtigoPrincipal = '';
+	public static $Idioma = '';
+	public static $Zonas = array();
 	/**
 	 * Prepara toda a informação necessária para construir a página
 	 */
-	public function Prepare()
+	public static function Prepare()
 	{
 		// isto serve para evitar outputs indesejados
 		ob_start(); 
 		
 		// Carregar valores da "base de dados"
 		CavernameDB::Load();
-		$this->Idioma = CavernameDB::$Config['idioma'];
+		self::$Idioma = CavernameDB::$Config['idioma'];
 		CavernameTema::$Id = CavernameDB::$Config['tema'];
 		
 		// Definições de sistema
@@ -213,11 +202,11 @@ class Cavername
 		// Cada conteúdo será carregado em memória como um objeto do tipo CavernameConteudo. 
 		foreach(CavernameDB::GetZonasForCurrentRequest() as $idZona => $conteudos)
 		{
-			$this->Zonas[$idZona] = array();
+			self::$Zonas[$idZona] = array();
 			$conteudos = explode(';', $conteudos);
 			foreach($conteudos as $idConteudo)
 			{
-				array_push($this->Zonas[$idZona], new CavernameConteudo($idConteudo, $idZona, true)); 
+				array_push(self::$Zonas[$idZona], new CavernameConteudo($idConteudo, $idZona, true)); 
 				CavernameRecursiveControl::Clear();
 			}			
 		}		
@@ -227,7 +216,7 @@ class Cavername
 	/**
 	 * Carregar parâmetros do servidor e browser
 	 */
-	private function LoadAmbiente()
+	private static function LoadAmbiente()
 	{
 		$selfDir = dirname($_SERVER['PHP_SELF']);
 		if ("/" === $selfDir) $selfDir = ""; // para funcionar quando o site está na raíz
@@ -245,13 +234,13 @@ class Cavername
             $l1 = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
             $l2 = explode(';', $l1[0]);
             $l3 = explode('-', $l2[0]);
-            $this->Idioma = $l3[0];
+            self::$Idioma = $l3[0];
         }
 	}
 	/**
 	 * Iniciar sessão e carregar valores
 	 */
-	private function SessionStart()
+	private static function SessionStart()
 	{
         session_start();
 		if (CAVERNAME_DEBUG) CavernameMensagens::Debug('$_SESSION=' . serialize($_SESSION));
@@ -261,7 +250,7 @@ class Cavername
 		}		
 		if (isset($_SESSION['Cavername-Idioma']))
 		{
-			$this->Idioma = $_SESSION['Cavername-Idioma'];
+			self::$Idioma = $_SESSION['Cavername-Idioma'];
 		}		
 		if (isset($_SESSION['Cavername-User']))
 		{
@@ -271,12 +260,12 @@ class Cavername
 	/**
 	 * "Executa" o template e produz o output. No ficheiro index.php dá para configurar o modo Dump.
 	 */
-	public function Serve()
+	public static function Serve()
 	{
 		if (true === CAVERNAME_DUMP)
 		{
 			echo '<pre>';
-			print_r(Cavername::One());
+			print_r(self);
 			echo '<hr />';
 			$a = get_defined_constants(true);
 			print_r($a['user']);
@@ -296,15 +285,15 @@ class Cavername
 	 */
 	public static function Out($zone)
 	{
-		if (array_key_exists($zone, Cavername::One()->Zonas))
+		if (array_key_exists($zone, self::$Zonas))
 		{
 			// zonas definidas na estrutura de páginas
-			foreach(Cavername::One()->Zonas[$zone] as $conteudo) // CavernameConteudo
+			foreach(self::$Zonas[$zone] as $conteudo) // CavernameConteudo
 			{
 				if (CAVERNAME_HEAD_ZONE === $zone)
 				{
 					// Manipular a tag <TITLE> para incluir o título do Artigo Principal
-					$conteudo->Html = preg_replace(CAVERNAME_PREG_TITLE, Cavername::One()->TituloSiteComposto(), $conteudo->Html);	
+					$conteudo->Html = preg_replace(CAVERNAME_PREG_TITLE, self::TituloSiteComposto(), $conteudo->Html);	
 					$conteudo->Out(false);
 				}
 				else
@@ -333,18 +322,14 @@ class Cavername
 	/**
 	 * Constrói uma string com o título do site e o título do artigo dentro da tag <title>
 	 */
-	private function TituloSiteComposto()
+	private static function TituloSiteComposto()
 	{
-		$s = $this->TituloSite;
-		if ('' !== $this->TituloArtigoPrincipal)
+		$s = self::$TituloSite;
+		if ('' !== self::$TituloArtigoPrincipal)
 		{
-			$s .= ' - ' . $this->TituloArtigoPrincipal;
+			$s .= ' - ' . self::$TituloArtigoPrincipal;
 		}
 		return sprintf(CAVERNAMEw_title, $s);
-	}
-	public static function Idioma()
-	{
-		echo Cavername::One()->Idioma;
 	}
 }
 /**
@@ -393,7 +378,7 @@ class CavernameTema
 			print('</head><body>');
 			print('<div style="color:red;">'); Cavername::Out(CAVERNAME_ERROR_ZONE); print('</div><hr />');
 			print('<div>'); Cavername::Out(CAVERNAME_DEBUG_ZONE); print('</div><hr />');
-			foreach(array_keys(Cavername::One()->Zonas) as $idZona)
+			foreach(array_keys(Cavername::$Zonas) as $idZona)
 			{
 				if (CAVERNAME_HEAD_ZONE !== $idZona) 
 				{
@@ -816,7 +801,7 @@ class CavernameConteudo
 			$this->Id = $idConteudo; 
 			if ($idioma == "")
 			{
-				$this->Idioma = Cavername::One()->Idioma;
+				$this->Idioma = Cavername::$Idioma;
 			}
 			else
 			{
@@ -857,13 +842,13 @@ class CavernameConteudo
 			if (CAVERNAME_HEAD_ZONE === $this->Zona)
 			{
 				$s = $this->getTitle();
-				if ('' !== $s) Cavername::One()->TituloSite = $s;
+				if ('' !== $s) Cavername::$TituloSite = $s;
 			}		
 			// Obter o título da página de uma tag H1 se existir.
 			$this->Titulo = $this->getH1();
 			if (true === $this->principal && $this->Titulo !== '')
 			{
-				Cavername::One()->TituloArtigoPrincipal = $this->Titulo;
+				Cavername::$TituloArtigoPrincipal = $this->Titulo;
 			}
 		}				
 		// Controlo de recursividade - se o artigo solicitado já foi processado é porque é "pai" do objeto atual.
@@ -1167,7 +1152,7 @@ class CavernameFuncoes
 	 */
     private static function SiteTitle($arg, $original = '')
     {
-        return Cavername::One()->TituloSite;
+        return Cavername::$TituloSite;
     }
 	/**
 	 * Retorna o id do conteúdo... usado no conteudo 404
@@ -1339,7 +1324,7 @@ class CavernameStrings
 {
 	public static function Set()
 	{
-		switch (Cavername::One()->Idioma)
+		switch (Cavername::$Idioma)
 		{
 			case 'pt':
 			{

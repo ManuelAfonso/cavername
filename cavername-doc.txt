@@ -21,7 +21,7 @@ Outros conteúdos podem resultar da execução de funções, por exemplo @Cavern
 executar o método static Login da classe CavernameUser. 
 
 Uma vez obtidos todos os conteúdos colocam-se duas possibilidades, definidas no index.php:
- * Executa-se o método Cavername::One()->Serve(); que passará o controlo para um dos ficheiros do tema
+ * Executa-se o método Cavername::Serve(); que passará o controlo para um dos ficheiros do tema
  * Escreve-se diretamente o HTML no próprio index.php, invocando o método Cavername::Out('zona') nos lugares apropriados.
 
 ===== Estrutura das páginas: zonas =====
