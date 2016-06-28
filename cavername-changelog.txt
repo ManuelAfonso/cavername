@@ -1,7 +1,3 @@
-Cavername 3, em curso
-------------------------
-- Passagem da classe Cavername para static (issue #42)
-
 Cavername 2, 2015-08-24
 ------------------------
 - Definição de um método para tratamento de ficheiros XML em geral (issue #31)
