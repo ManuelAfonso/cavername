@@ -1,0 +1,147 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E22F9BEB-3FAF-446F-B5B1-6945BD8F6E17}"
+	ProjectSection(SolutionItems) = preProject
+		.htaccess = .htaccess
+		cavername-changelog.txt = cavername-changelog.txt
+		cavername-doc.txt = cavername-doc.txt
+		cavername-extend.php = cavername-extend.php
+		cavername.db = cavername.db
+		cavername.php = cavername.php
+		index.php = index.php
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "conteudo", "conteudo", "{C8000BAE-7245-4BA9-8239-DC92F3631CC6}"
+	ProjectSection(SolutionItems) = preProject
+		conteudo\404.html = conteudo\404.html
+		conteudo\home.htm = conteudo\home.htm
+		conteudo\htmlhead.html = conteudo\htmlhead.html
+		conteudo\index.php = conteudo\index.php
+		conteudo\ligacoes.htm = conteudo\ligacoes.htm
+		conteudo\main.htm = conteudo\main.htm
+		conteudo\sentido.htm = conteudo\sentido.htm
+		conteudo\web_mh.jpg = conteudo\web_mh.jpg
+		conteudo\web_silo.jpg = conteudo\web_silo.jpg
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "design", "design", "{3BB5BD65-2D66-4310-AF4F-04A74256DFC5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bts1-orange", "bts1-orange", "{07EAEB5E-8974-4375-A4BD-FB782E1BB4D3}"
+	ProjectSection(SolutionItems) = preProject
+		design\bts1-orange\common.php = design\bts1-orange\common.php
+		design\bts1-orange\fp.txt = design\bts1-orange\fp.txt
+		design\bts1-orange\frontpage.php = design\bts1-orange\frontpage.php
+		design\bts1-orange\layout-sem-sidebar.php = design\bts1-orange\layout-sem-sidebar.php
+		design\bts1-orange\layout.php = design\bts1-orange\layout.php
+		design\bts1-orange\print.css = design\bts1-orange\print.css
+		design\bts1-orange\style.css = design\bts1-orange\style.css
+		design\bts1-orange\Tbilingue.php = design\bts1-orange\Tbilingue.php
+		design\bts1-orange\Tchapters.php = design\bts1-orange\Tchapters.php
+		design\bts1-orange\Tcolumns.php = design\bts1-orange\Tcolumns.php
+		design\bts1-orange\Texcerpt.php = design\bts1-orange\Texcerpt.php
+		design\bts1-orange\Tmessage-list.php = design\bts1-orange\Tmessage-list.php
+		design\bts1-orange\Tnavigation.php = design\bts1-orange\Tnavigation.php
+		design\bts1-orange\Toptions.php = design\bts1-orange\Toptions.php
+		design\bts1-orange\Tpages.php = design\bts1-orange\Tpages.php
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "blocks", "blocks", "{1929C02A-A61A-4A1B-9F0E-F6CEED232DC9}"
+	ProjectSection(SolutionItems) = preProject
+		conteudo\blocks\final.htm = conteudo\blocks\final.htm
+		conteudo\blocks\heading.htm = conteudo\blocks\heading.htm
+		conteudo\blocks\index.php = conteudo\blocks\index.php
+		conteudo\blocks\navigation2.xml = conteudo\blocks\navigation2.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "materiais", "materiais", "{B8BBB2BA-11C3-41CB-88A4-D0994560AE97}"
+	ProjectSection(SolutionItems) = preProject
+		conteudo\materiais\cura_sofrimento.es.htm = conteudo\materiais\cura_sofrimento.es.htm
+		conteudo\materiais\cura_sofrimento.htm = conteudo\materiais\cura_sofrimento.htm
+		conteudo\materiais\documento.htm = conteudo\materiais\documento.htm
+		conteudo\materiais\materiais.htm = conteudo\materiais\materiais.htm
+		conteudo\materiais\pv1969_bilingue.txt = conteudo\materiais\pv1969_bilingue.txt
+		conteudo\materiais\pv1999.htm = conteudo\materiais\pv1999.htm
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "organismos", "organismos", "{0DC2D9E9-BDDC-489D-A7F5-2D85E4442F11}"
+	ProjectSection(SolutionItems) = preProject
+		conteudo\organismos\ac.htm = conteudo\organismos\ac.htm
+		conteudo\organismos\ac_extra.htm = conteudo\organismos\ac_extra.htm
+		conteudo\organismos\cc.htm = conteudo\organismos\cc.htm
+		conteudo\organismos\cc_extra.htm = conteudo\organismos\cc_extra.htm
+		conteudo\organismos\cmeh.htm = conteudo\organismos\cmeh.htm
+		conteudo\organismos\cmeh_extra.htm = conteudo\organismos\cmeh_extra.htm
+		conteudo\organismos\logo_cc_por.png = conteudo\organismos\logo_cc_por.png
+		conteudo\organismos\logo_cmeh_por.png = conteudo\organismos\logo_cmeh_por.png
+		conteudo\organismos\logo_lc_por.png = conteudo\organismos\logo_lc_por.png
+		conteudo\organismos\logo_msg_por.png = conteudo\organismos\logo_msg_por.png
+		conteudo\organismos\logo_ph_por.png = conteudo\organismos\logo_ph_por.png
+		conteudo\organismos\menu-css.php = conteudo\organismos\menu-css.php
+		conteudo\organismos\menu.htm = conteudo\organismos\menu.htm
+		conteudo\organismos\msg.htm = conteudo\organismos\msg.htm
+		conteudo\organismos\msg_extra.htm = conteudo\organismos\msg_extra.htm
+		conteudo\organismos\organismos.htm = conteudo\organismos\organismos.htm
+		conteudo\organismos\ph.htm = conteudo\organismos\ph.htm
+		conteudo\organismos\ph_extra.htm = conteudo\organismos\ph_extra.htm
+		conteudo\organismos\web_cc.jpg = conteudo\organismos\web_cc.jpg
+		conteudo\organismos\web_cmeh.jpg = conteudo\organismos\web_cmeh.jpg
+		conteudo\organismos\web_lc.jpg = conteudo\organismos\web_lc.jpg
+		conteudo\organismos\web_ph.jpg = conteudo\organismos\web_ph.jpg
+		conteudo\organismos\web_ph_pt.jpg = conteudo\organismos\web_ph_pt.jpg
+		conteudo\organismos\web_www.jpg = conteudo\organismos\web_www.jpg
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "parques", "parques", "{CCF495E0-DB01-4E71-AEB7-CFA43F7EB291}"
+	ProjectSection(SolutionItems) = preProject
+		conteudo\parques\centro.jpg = conteudo\parques\centro.jpg
+		conteudo\parques\estela.jpg = conteudo\parques\estela.jpg
+		conteudo\parques\fuente.jpg = conteudo\parques\fuente.jpg
+		conteudo\parques\ligacoes.htm = conteudo\parques\ligacoes.htm
+		conteudo\parques\monilito.jpg = conteudo\parques\monilito.jpg
+		conteudo\parques\multiuso.jpg = conteudo\parques\multiuso.jpg
+		conteudo\parques\parque.htm = conteudo\parques\parque.htm
+		conteudo\parques\portal.jpg = conteudo\parques\portal.jpg
+		conteudo\parques\sala.jpg = conteudo\parques\sala.jpg
+		conteudo\parques\web_minho.jpg = conteudo\parques\web_minho.jpg
+		conteudo\parques\web_punta.jpg = conteudo\parques\web_punta.jpg
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "testes", "testes", "{A50F3A15-D022-431A-B814-00BFBF75A94F}"
+	ProjectSection(SolutionItems) = preProject
+		conteudo\testes\colunas.htm = conteudo\testes\colunas.htm
+		conteudo\testes\t1.htm = conteudo\testes\t1.htm
+		conteudo\testes\t2.php = conteudo\testes\t2.php
+		conteudo\testes\t3.htm = conteudo\testes\t3.htm
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "videos", "videos", "{3EFEBE1F-8B58-431A-AEE5-2C3D4DF74295}"
+	ProjectSection(SolutionItems) = preProject
+		conteudo\videos\v1969.htm = conteudo\videos\v1969.htm
+		conteudo\videos\v1998.htm = conteudo\videos\v1998.htm
+		conteudo\videos\v2008.htm = conteudo\videos\v2008.htm
+		conteudo\videos\video_1969.jpg = conteudo\videos\video_1969.jpg
+		conteudo\videos\video_1998.jpg = conteudo\videos\video_1998.jpg
+		conteudo\videos\video_2008.jpg = conteudo\videos\video_2008.jpg
+		conteudo\videos\videos.htm = conteudo\videos\videos.htm
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C8000BAE-7245-4BA9-8239-DC92F3631CC6} = {E22F9BEB-3FAF-446F-B5B1-6945BD8F6E17}
+		{3BB5BD65-2D66-4310-AF4F-04A74256DFC5} = {E22F9BEB-3FAF-446F-B5B1-6945BD8F6E17}
+		{07EAEB5E-8974-4375-A4BD-FB782E1BB4D3} = {3BB5BD65-2D66-4310-AF4F-04A74256DFC5}
+		{1929C02A-A61A-4A1B-9F0E-F6CEED232DC9} = {C8000BAE-7245-4BA9-8239-DC92F3631CC6}
+		{B8BBB2BA-11C3-41CB-88A4-D0994560AE97} = {C8000BAE-7245-4BA9-8239-DC92F3631CC6}
+		{0DC2D9E9-BDDC-489D-A7F5-2D85E4442F11} = {C8000BAE-7245-4BA9-8239-DC92F3631CC6}
+		{CCF495E0-DB01-4E71-AEB7-CFA43F7EB291} = {C8000BAE-7245-4BA9-8239-DC92F3631CC6}
+		{A50F3A15-D022-431A-B814-00BFBF75A94F} = {C8000BAE-7245-4BA9-8239-DC92F3631CC6}
+		{3EFEBE1F-8B58-431A-AEE5-2C3D4DF74295} = {C8000BAE-7245-4BA9-8239-DC92F3631CC6}
+	EndGlobalSection
+EndGlobal
